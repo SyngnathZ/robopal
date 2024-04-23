@@ -2,9 +2,8 @@
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
      Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="fr5v6">
-  
+
+<robot  name="FR5Cobot">
   <link name="world">
   </link>
   <joint name="world" type="fixed">
@@ -34,7 +33,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/base_link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/base_link.stl" />
       </geometry>
       <material
         name="">
@@ -48,7 +47,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/base_link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -74,7 +73,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/j1_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j1_Link.stl" />
       </geometry>
       <material
         name="">
@@ -88,7 +87,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/j1_Link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/j1_Link.STL" />
       </geometry>
     </collision>
   </link>
@@ -143,7 +142,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/j2_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j2_Link.stl" />
       </geometry>
       <material
         name="">
@@ -157,7 +156,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/j2_Link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/j2_Link.STL" />
       </geometry>
     </collision>
   </link>
@@ -212,7 +211,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/j3_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j3_Link.stl" />
       </geometry>
       <material
         name="">
@@ -226,7 +225,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/j3_Link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/j3_Link.STL" />
       </geometry>
     </collision>
   </link>
@@ -281,7 +280,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/j4_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j4_Link.stl" />
       </geometry>
       <material
         name="">
@@ -295,7 +294,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/j4_Link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/j4_Link.STL" />
       </geometry>
     </collision>
   </link>
@@ -350,7 +349,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/j5_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j5_Link.stl" />
       </geometry>
       <material
         name="">
@@ -364,7 +363,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/j5_Link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/j5_Link.STL" />
       </geometry>
     </collision>
   </link>
@@ -419,7 +418,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/visual-stl/j6_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j6_Link.stl" />
       </geometry>
       <material
         name="">
@@ -433,7 +432,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/fr5v6/collision/j6_Link.STL" />
+          filename="package://frcobot_description/meshes/FR5Cobot/collision/j6_Link.STL" />
       </geometry>
     </collision>
   </link>
