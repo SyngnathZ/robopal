@@ -3,6 +3,7 @@ import numpy as np
 import logging
 
 from robopal.robots.fr5_cobot import FR5Cobot
+from robopal.robots.fr5_cobot import FR5Grasp
 from robopal.envs import RobotEnv, PosCtrlEnv
 
 logging.basicConfig(level=logging.INFO)
@@ -36,7 +37,7 @@ if __name__ == "__main__":
 
     elif options['ctrl'] == 'CARTIK':
         env = PosCtrlEnv(
-            robot=FR5Cobot(),
+            robot=FR5Grasp(),
             render_mode='human',
             control_freq=200,
             is_interpolate=False,
