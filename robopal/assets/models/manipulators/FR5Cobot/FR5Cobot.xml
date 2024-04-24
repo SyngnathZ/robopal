@@ -14,9 +14,9 @@
         <mesh name="j4_Link" file="meshes/j4_Link.STL"/>
         <mesh name="j5_Link" file="meshes/j5_Link.STL"/>
         <mesh name="j6_Link" file="meshes/j6_Link.STL"/>
+        <mesh name="tool_Link" file="meshes/tool_Link.STL"/>
     </asset>
     <worldbody>
-        <!--  <light name="spotlight" mode="targetbodycom" target="j6_Link" pos="0 -1 2"/>-->
         <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.89804 0.91765 0.92941 1"
               mesh="base_link"/>
         <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="base_link"/>
@@ -64,6 +64,11 @@
                                 <geom type="mesh" contype="0" conaffinity="0" group="1" density="0"
                                       rgba="0.89804 0.91765 0.92941 1" mesh="j6_Link"/>
                                 <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="j6_Link"/>
+                                <body name="tool_Link" pos="-0.0052 0.005 0.095" quat="0 1 0 0">
+                                    <geom type="mesh" contype="0" conaffinity="0" group="1"
+                                          density="0" rgba="1 1 1 1" mesh="tool_Link"/>
+                                    <geom type="mesh" rgba="1 1 1 1" mesh="tool_Link"/>
+                                </body>
                             </body>
                         </body>
                     </body>
@@ -71,6 +76,7 @@
             </body>
         </body>
     </worldbody>
+
     <actuator>
         <motor name="a1" ctrllimited="true" ctrlrange="-400.0 400.0" joint="j1"/>
         <motor name="a2" ctrllimited="true" ctrlrange="-400.0 400.0" joint="j2"/>
@@ -79,4 +85,5 @@
         <motor name="a5" ctrllimited="true" ctrlrange="-400.0 400.0" joint="j5"/>
         <motor name="a6" ctrllimited="true" ctrlrange="-400.0 400.0" joint="j6"/>
     </actuator>
+
 </mujoco>

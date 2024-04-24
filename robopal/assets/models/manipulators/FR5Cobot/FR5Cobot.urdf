@@ -33,7 +33,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/base_link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/base_link.stl" />
       </geometry>
       <material
         name="">
@@ -73,7 +73,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j1_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/j1_Link.stl" />
       </geometry>
       <material
         name="">
@@ -142,7 +142,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j2_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/j2_Link.stl" />
       </geometry>
       <material
         name="">
@@ -211,7 +211,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j3_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/j3_Link.stl" />
       </geometry>
       <material
         name="">
@@ -280,7 +280,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j4_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/j4_Link.stl" />
       </geometry>
       <material
         name="">
@@ -349,7 +349,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j5_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/j5_Link.stl" />
       </geometry>
       <material
         name="">
@@ -418,7 +418,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://frcobot_description/meshes/FR5Cobot/visual-stl/j6_Link.stl" />
+          filename="package://frcobot_description/meshes/FR5Cobot/visual/j6_Link.stl" />
       </geometry>
       <material
         name="">
@@ -440,7 +440,7 @@
     name="j6"
     type="revolute">
     <origin
-      xyz="0 0 0.102"
+      xyz="0 0.1 0.102"
       rpy="-1.5708 0 0" />
     <parent
       link="j5_Link" />
