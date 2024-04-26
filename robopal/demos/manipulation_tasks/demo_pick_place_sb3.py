@@ -1,7 +1,7 @@
 import gymnasium as gym
 from robopal.commons.gym_wrapper import GoalEnvWrapper
 from robopal.demos.manipulation_tasks.demo_pick_place import PickAndPlaceEnv
-from stable_baselines3 import SAC, TD3, A2C
+from stable_baselines3 import SAC, TD3, A2C, PPO
 import os
 import argparse
 
@@ -19,6 +19,8 @@ def train(env, sb3_algo):
             model = TD3('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
         case 'A2C':
             model = A2C('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+        case 'PPO':
+            model = PPO('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
         case _:
             print('Algorithm not found')
             return
@@ -40,6 +42,8 @@ def test(env, sb3_algo, path_to_model):
             model = TD3.load(path_to_model, env=env)
         case 'A2C':
             model = A2C.load(path_to_model, env=env)
+        case 'PPO':
+            model = PPO.load(path_to_model, env=env)
         case _:
             print('Algorithm not found')
             return

@@ -13,7 +13,7 @@ if __name__ == "__main__":
     options = {}
 
     # Choose controller
-    options['ctrl'] = 'CARTIK'
+    options['ctrl'] = 'JNTIMP'
 
     assert options['ctrl'] in ['JNTIMP', 'JNTVEL', 'CARTIMP', 'CARTIK'], 'Invalid controller'
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         )
 
         if options['ctrl'] == 'JNTIMP':
-            action = np.array([0.2, 0.2, 0, 0, 0, 0])
+            action = np.array([-1.5, -2.5, 0, 0, 0, 0])
 
         elif options['ctrl'] == 'JNTVEL':
             action = np.array([0.01, -0.01, 0.0, 0.0, 0.01, 0.01])
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     elif options['ctrl'] == 'CARTIK':
         env = PosCtrlEnv(
-            robot=FR5Grasp(),
+            robot=FR5Cobot(),
             render_mode='human',
             control_freq=200,
             is_interpolate=False,
