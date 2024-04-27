@@ -1,12 +1,12 @@
 import abc
 import logging
-from typing import Any
+from typing import Union, List, Any, Dict
 
 import mujoco
 import numpy as np
 
 from robopal.commons.renderers import MjRenderer
-from robopal.robots.base import BaseArm
+from robopal.robots.base import BaseRobot
 
 
 class MujocoEnv:
@@ -33,12 +33,12 @@ class MujocoEnv:
     def __init__(
         self,
         robot=None,
-        control_freq=200,
-        enable_camera_viewer=False,
-        camera_name=None,
-        render_mode='human',
+        control_freq: int = 200,
+        enable_camera_viewer: bool = False,
+        camera_name: str = None,
+        render_mode: str = 'human',
     ):
-        assert isinstance(robot, BaseArm), "Please select a robot config file."
+        assert isinstance(robot, BaseRobot), "Please select a robot config file."
         self.robot = robot
         self.agents = self.robot.agents
 
@@ -61,7 +61,7 @@ class MujocoEnv:
 
         self._mj_state = None
 
-    def step(self, action: np.ndarray | dict[str, np.ndarray]):
+    def step(self, action: Union[np.ndarray, Dict[str, np.ndarray]]):
         """ 
         This method will be called with one-step in mujoco
         :param action: Input action
@@ -85,8 +85,8 @@ class MujocoEnv:
 
     def reset(
         self,
-        seed: int | None = None,
-        options: dict[str, Any] | None = None,
+        seed: Union[int, None] = None,
+        options: Union[Dict[str, Any], None] = None,
     ):
         """ Reset the simulate environment, in order to execute next episode. """
         mujoco.mj_resetData(self.mj_model, self.mj_data)
@@ -103,7 +103,7 @@ class MujocoEnv:
         """ Set pose of the object. """
         pass
 
-    def render(self):
+    def render(self) -> Union[None, np.ndarray]:
         """ render one frame in mujoco """
         if self.render_mode in ["human", "rgb_array", "depth"]:
             self.renderer.render()
@@ -136,14 +136,14 @@ class MujocoEnv:
     def set_joint_qpos(self, qpos: np.ndarray, agent: str = 'arm0'):
         """ Set joint position. """
         assert qpos.shape[0] == self.robot.jnt_num
-        for j, per_joint_index in enumerate(self.robot.joint_index[agent]):
-            self.mj_data.joint(per_joint_index).qpos = qpos[j]
+        for j, per_arm_joint_names in enumerate(self.robot.arm_joint_names[agent]):
+            self.mj_data.joint(per_arm_joint_names).qpos = qpos[j]
 
     def set_joint_ctrl(self, torque: np.ndarray, agent: str = 'arm0'):
         """ Set joint torque. """
         assert torque.shape[0] == self.robot.jnt_num
-        for j, per_actuator_index in enumerate(self.robot.actuator_index[agent]):
-            self.mj_data.actuator(per_actuator_index).ctrl = torque[j]
+        for j, per_arm_actuator_names in enumerate(self.robot.arm_actuator_names[agent]):
+            self.mj_data.actuator(per_arm_actuator_names).ctrl = torque[j]
 
     def set_object_pose(self, obj_joint_name: str = None, obj_pose: np.ndarray = None):
         """ Set pose of the object. """
@@ -314,7 +314,7 @@ class MujocoEnv:
         """
         return self.mj_data.site(name).xmat.copy().reshape(3, 3)
 
-    def get_geom_id(self, name: str | list[str]):
+    def get_geom_id(self, name: Union[str, List[str]]):
         """ Get geometry id from its name.
 
         :param name: geometry name
@@ -342,7 +342,7 @@ class MujocoEnv:
         spec = mujoco.mjtState.mjSTATE_INTEGRATION
         mujoco.mj_setState(self.mj_model, self.mj_data, self._mj_state, spec)
 
-    def is_contact(self, geom1: str | list[str], geom2: str | list[str], verbose=False) -> bool:
+    def is_contact(self, geom1: Union[str, List[str]], geom2: Union[str, List[str]], verbose=False) -> bool:
         """ Check if two geom or geom list is in contact.
 
         :param geom1: geom name/list

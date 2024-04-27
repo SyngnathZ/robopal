@@ -1,12 +1,13 @@
 import abc
 import logging
+from typing import Union, List, Dict
 
 import mujoco
 import numpy as np
 from robopal.commons import RobotGenerator
 
 
-class BaseArm:
+class BaseRobot:
     """ Base class for generating Data struct of the arm.
 
     :param name(str): robot name
@@ -23,10 +24,10 @@ class BaseArm:
     def __init__(self,
                  name: str = None,
                  scene: str = 'default',
-                 chassis: str | list[str] = None,
-                 manipulator: str | list[str] = None,
-                 gripper: str | list[str] = None,
-                 g2m_body: str | list[str] = None,
+                 chassis: Union[str, List[str]] = None,
+                 manipulator: Union[str, List[str]] = None,
+                 gripper: Union[str, List[str]] = None,
+                 g2m_body: Union[str, List[str]] = None,
                  urdf_path: str = None,
                  ):
         self.name = name
@@ -51,8 +52,15 @@ class BaseArm:
         self.robot_model = mujoco.MjModel.from_xml_path(filename=xml_path, assets=None)
         self.robot_data = mujoco.MjData(self.robot_model)
 
-        self.joint_index = dict([])
-        self.actuator_index = dict([])
+        # robot infos
+        self._arm_joint_names = dict()
+        self._arm_joint_indexes = dict()
+        self._arm_actuator_names = dict()
+        self._arm_actuator_indexes = dict()
+        self._gripper_joint_names = dict()
+        self._gripper_joint_indexes = dict()
+        self._gripper_actuator_names = dict()
+        self._gripper_actuator_indexes = dict()
 
     def _construct_mjcf_data(self) -> RobotGenerator:
         return RobotGenerator(
@@ -64,7 +72,41 @@ class BaseArm:
         )
 
     @property
-    def init_qpos(self) -> dict[str, np.array]:
+    def arm_joint_names(self) -> Dict[str, np.ndarray]:
+        """ robot info """
+        return self._arm_joint_names
+    
+    @property
+    def arm_joint_indexes(self) -> Dict[str, np.ndarray]:
+        """ robot info """
+        return self._arm_joint_indexes
+    
+    @arm_joint_names.setter
+    def arm_joint_names(self, names: Dict[str, np.ndarray]):
+        self._arm_joint_names = names
+        for agent, names in names.items():
+            index = [mujoco.mj_name2id(self.robot_model, mujoco.mjtObj.mjOBJ_JOINT, name) for name in names]
+            self._arm_joint_indexes[agent] = index
+
+    @property
+    def arm_actuator_names(self) -> Dict[str, np.ndarray]:
+        """ robot info """
+        return self._arm_actuator_names
+    
+    @property
+    def arm_actuator_indexes(self) -> Dict[str, np.ndarray]:
+        """ robot info """
+        return self._arm_actuator_indexes
+    
+    @arm_actuator_names.setter
+    def arm_actuator_names(self, names: Dict[str, np.ndarray]):
+        self._arm_actuator_names = names
+        for agent, names in names.items():
+            index = [mujoco.mj_name2id(self.robot_model, mujoco.mjtObj.mjOBJ_ACTUATOR, name) for name in names]
+            self._arm_actuator_indexes[agent] = index
+
+    @property
+    def init_qpos(self) -> Dict[str, np.ndarray]:
         """ Robot's init joint position. """
         raise NotImplementedError
 
@@ -74,9 +116,9 @@ class BaseArm:
         pass
 
     @property
-    def jnt_num(self) -> int | dict[str, int]:
+    def jnt_num(self) -> Union[int, Dict[str, int]]:
         """ Number of joints. """
-        return len(self.joint_index[self.agents[0]])
+        return len(self.arm_joint_names[self.agents[0]])
 
     def get_arm_qpos(self, agent: str = 'arm0') -> np.ndarray:
         """ Get arm joint position of the specified agent.
@@ -84,7 +126,7 @@ class BaseArm:
         :param agent: agent name
         :return: joint position
         """
-        return np.array([self.robot_data.joint(j).qpos[0] for j in self.joint_index[agent]])
+        return np.array([self.robot_data.joint(j).qpos[0] for j in self.arm_joint_names[agent]])
 
     def get_arm_qvel(self, agent: str = 'arm0') -> np.ndarray:
         """ Get arm joint velocity of the specified agent.
@@ -92,7 +134,7 @@ class BaseArm:
         :param agent: agent name
         :return: joint position
         """
-        return np.array([self.robot_data.joint(j).qvel[0] for j in self.joint_index[agent]])
+        return np.array([self.robot_data.joint(j).qvel[0] for j in self.arm_joint_names[agent]])
 
     def get_arm_qacc(self, agent: str = 'arm0') -> np.ndarray:
         """ Get arm joint accelerate of the specified agent.
@@ -100,4 +142,20 @@ class BaseArm:
         :param agent: agent name
         :return: joint position
         """
-        return np.array([self.robot_data.joint(j).qacc[0] for j in self.joint_index[agent]])
+        return np.array([self.robot_data.joint(j).qacc[0] for j in self.arm_joint_names[agent]])
+
+    def get_mass_matrix(self, agent: str = 'arm0') -> np.ndarray:
+        """ Get Mass Matrix
+        ref https://github.com/ARISE-Initiative/robosuite/blob/master/robosuite/controllers/base_controller.py#L61
+
+        :param agent: agent name
+        :return: mass matrix
+        """
+        mass_matrix = np.ndarray(shape=(self.robot_model.nv, self.robot_model.nv), dtype=np.float64, order="C")
+        # qM is inertia in joint space
+        mujoco.mj_fullM(self.robot_model, mass_matrix, self.robot_data.qM)
+        mass_matrix = np.reshape(mass_matrix, (len(self.robot_data.qvel), len(self.robot_data.qvel)))
+        return mass_matrix[self.arm_joint_indexes[agent], :][:, self.arm_joint_indexes[agent]]
+
+    def get_coriolis_gravity_compensation(self, agent: str = 'arm0') -> np.ndarray:
+        return self.robot_data.qfrc_bias[self.arm_joint_indexes[agent]]
