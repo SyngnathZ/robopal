@@ -13,7 +13,7 @@ if __name__ == "__main__":
     options = {}
 
     # Choose controller
-    options['ctrl'] = 'JNTIMP'
+    options['ctrl'] = 'CARTIK'
 
     assert options['ctrl'] in ['JNTIMP', 'JNTVEL', 'CARTIMP', 'CARTIK'], 'Invalid controller'
 

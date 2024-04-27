@@ -5,7 +5,7 @@ from robopal.robots.base import *
 ASSET_DIR = os.path.join(os.path.dirname(__file__), '../assets')
 
 
-class FR5Cobot(BaseArm):
+class FR5Cobot(BaseRobot):
     """ FR5 robot base class. """
     def __init__(self,
                  scene='default',
@@ -22,15 +22,15 @@ class FR5Cobot(BaseArm):
             g2m_body='0_tool_Link',
             urdf_path=os.path.join(ASSET_DIR, "models/manipulators/FR5Cobot/FR5Cobot.urdf"),
         )
-        self.joint_index = {self.agents[0]: ['0_j1', '0_j2', '0_j3', '0_j4', '0_j5', '0_j6']}
-        self.actuator_index = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6']}
+        self.arm_joint_names = {self.agents[0]: ['0_j1', '0_j2', '0_j3', '0_j4', '0_j5', '0_j6']}
+        self.arm_actuator_names = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6']}
     @property
     def init_qpos(self):
         """ Robot's init joint position. """
         return {self.agents[0]: np.array([0.0, -np.pi / 4.0, 0.0, np.pi / 2.0, 0.00, np.pi / 4.0])}
 
 
-class DualFR5Cobot(BaseArm):
+class DualFR5Cobot(BaseRobot):
     """ Dual FR5 robots base class. """
     def __init__(self,
                  scene='default',
@@ -48,9 +48,9 @@ class DualFR5Cobot(BaseArm):
             g2m_body=g2m_body,
             urdf_path=os.path.join(ASSET_DIR, "models/manipulators/FR5Cobot/FR5Cobot.urdf"),
         )
-        self.joint_index = {self.agents[0]: ['0_j1', '0_j2', '0_j3', '0_j4', '0_j5', '0_j6'],
+        self.arm_joint_names = {self.agents[0]: ['0_j1', '0_j2', '0_j3', '0_j4', '0_j5', '0_j6'],
                             self.agents[1]: ['1_j1', '1_j2', '1_j3', '1_j4', '1_j5', '1_j6']}
-        self.actuator_index = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6'],
+        self.arm_actuator_names = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6'],
                                self.agents[1]: ['1_a1', '1_a2', '1_a3', '1_a4', '1_a5', '1_a6']}
 
     @property
