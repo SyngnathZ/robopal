@@ -1,13 +1,14 @@
 from robopal.commons.gym_wrapper import GoalEnvWrapper
 from robopal.demos.manipulation_tasks.demo_pick_place import PickAndPlaceEnv
+from robopal.demos.manipulation_tasks.demo_reach_place import ReachPlaceEnv
 from stable_baselines3 import SAC, TD3, A2C, PPO
 from sb3_contrib import TQC
 import os
 import argparse
 
 # Create directories to hold models and logs
-model_dir = "models"
-log_dir = "logs"
+model_dir = "models/ReachPlace-v1"
+log_dir = "logs/ReachPlace-v1"
 os.makedirs(model_dir, exist_ok=True)
 os.makedirs(log_dir, exist_ok=True)
 
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--test', metavar='path_to_model')
     args = parser.parse_args()
 
-    env = PickAndPlaceEnv()
+    env = ReachPlaceEnv()
     env = GoalEnvWrapper(env)
     env.reset()
 
