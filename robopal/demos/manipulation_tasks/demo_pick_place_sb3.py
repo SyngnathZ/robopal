@@ -1,7 +1,7 @@
-import gymnasium as gym
 from robopal.commons.gym_wrapper import GoalEnvWrapper
 from robopal.demos.manipulation_tasks.demo_pick_place import PickAndPlaceEnv
 from stable_baselines3 import SAC, TD3, A2C, PPO
+from sb3_contrib import TQC
 import os
 import argparse
 
@@ -10,6 +10,7 @@ model_dir = "models"
 log_dir = "logs"
 os.makedirs(model_dir, exist_ok=True)
 os.makedirs(log_dir, exist_ok=True)
+
 
 def train(env, sb3_algo):
     match sb3_algo:
@@ -21,6 +22,8 @@ def train(env, sb3_algo):
             model = A2C('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
         case 'PPO':
             model = PPO('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+        case 'TQC':
+            model = TQC('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
         case _:
             print('Algorithm not found')
             return
@@ -31,10 +34,10 @@ def train(env, sb3_algo):
         iters += 1
 
         model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps=False)
-        model.save(f"{model_dir}/{sb3_algo}_{TIMESTEPS*iters}")
+        model.save(f"{model_dir}/{sb3_algo}_{TIMESTEPS * iters}")
+
 
 def test(env, sb3_algo, path_to_model):
-
     match sb3_algo:
         case 'SAC':
             model = SAC.load(path_to_model, env=env)
@@ -44,6 +47,8 @@ def test(env, sb3_algo, path_to_model):
             model = A2C.load(path_to_model, env=env)
         case 'PPO':
             model = PPO.load(path_to_model, env=env)
+        case 'TQC':
+            model = TQC.load(path_to_model, env=env)
         case _:
             print('Algorithm not found')
             return
@@ -79,10 +84,9 @@ if __name__ == '__main__':
         gymenv = env
         train(gymenv, args.sb3_algo)
 
-    if(args.test):
+    if (args.test):
         if os.path.isfile(args.test):
             gymenv = env
             test(gymenv, args.sb3_algo, path_to_model=args.test)
         else:
             print(f'{args.test} not found.')
-
