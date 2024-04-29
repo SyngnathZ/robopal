@@ -1,6 +1,6 @@
 from robopal.commons.gym_wrapper import GoalEnvWrapper
-from robopal.demos.manipulation_tasks.demo_pick_place import PickAndPlaceEnv
-from robopal.demos.manipulation_tasks.demo_reach_place import ReachPlaceEnv
+from robopal.demos.manipulation_tasks.demo_dual_reach_place import DualReachPlaceEnv
+# from robopal.demos.manipulation_tasks.demo_reach_place import ReachPlaceEnv
 from stable_baselines3 import SAC, TD3, A2C, PPO
 from sb3_contrib import TQC
 import os
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--test', metavar='path_to_model')
     args = parser.parse_args()
 
-    env = ReachPlaceEnv()
+    env = DualReachPlaceEnv()
     env = GoalEnvWrapper(env)
     env.reset()
 

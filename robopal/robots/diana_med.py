@@ -34,10 +34,10 @@ class DianaMed(BaseRobot):
 class DualDianaMed(BaseRobot):
     """ Dual DianaMed robots base class. """
     def __init__(self,
-                 scene='default',
+                 scene='dualGrasping',
                  manipulator=['DianaMed', 'DianaMed'],
                  gripper=['rethink_gripper', 'rethink_gripper'],
-                 mount=['floor_left', 'floor_right'],
+                 mount=['top_point_dual_left', 'top_point_dual_right'],
                  g2m_body=['0_link7', '1_link7']
                  ):
         super().__init__(
@@ -53,6 +53,13 @@ class DualDianaMed(BaseRobot):
                             self.agents[1]: ['1_j1', '1_j2', '1_j3', '1_j4', '1_j5', '1_j6', '1_j7']}
         self.arm_actuator_names = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6', '0_a7'],
                                self.agents[1]: ['1_a1', '1_a2', '1_a3', '1_a4', '1_a5', '1_a6', '1_a7']}
+
+    def add_assets(self):
+
+        goal_site_0 = """<site name="0_goal_site" pos="0.4 0.0 0.5" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere" />"""
+        goal_site_1 = """<site name="1_goal_site" pos="0.3 0.0 0.5" size="0.02 0.02 0.02" rgba="0 1 0 1" type="sphere" />"""
+        self.mjcf_generator.add_node_from_str('worldbody', goal_site_0)
+        self.mjcf_generator.add_node_from_str('worldbody', goal_site_1)
 
     @property
     def init_qpos(self):
@@ -99,7 +106,7 @@ class DianaCalib(DianaMed):
 
 class DianaGrasp(DianaMed):
     def __init__(self):
-        super().__init__(scene='grasping',
+        super().__init__(scene='dualGrasping',
                          gripper='rethink_gripper',
                          mount='top_point')
 

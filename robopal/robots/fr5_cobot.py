@@ -33,11 +33,11 @@ class FR5Cobot(BaseRobot):
 class DualFR5Cobot(BaseRobot):
     """ Dual FR5 robots base class. """
     def __init__(self,
-                 scene='default',
+                 scene='dualGrasping',
                  manipulator=['FR5Cobot', 'FR5Cobot'],
                  gripper=['rethink_gripper', 'rethink_gripper'],
-                 mount=['floor_left', 'floor_right'],
-                 g2m_body=['0_j6_Link', '1_j6_Link']
+                 mount=['top_point_dual_left', 'top_point_dual_right'],
+                 g2m_body=['0_tool_Link', '1_tool_Link']
                  ):
         super().__init__(
             name="fr5_cobot",
