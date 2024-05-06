@@ -1,9 +1,10 @@
 from typing import Union, Dict
 
 import numpy as np
+import mujoco
 
 from robopal.envs.base import MujocoEnv
-from robopal.controllers import controllers
+from robopal.controllers import controllers, BaseController
 
 
 class RobotEnv(MujocoEnv):
@@ -39,13 +40,11 @@ class RobotEnv(MujocoEnv):
 
         # choose controller
         assert controller in controllers, f"Not supported controller, you can choose from {controllers.keys()}"
-        self.controller = controllers[controller](
+        self.controller: BaseController = controllers[controller](
             self.robot,
             is_interpolate=is_interpolate,
             interpolator_config={'dof': self.robot.jnt_num, 'control_timestep': self.control_timestep}
         )
-
-        self.kd_solver = self.controller.kd_solver  # shallow copy
 
         # check the control frequency
         self._n_substeps = int(self.control_timestep / self.model_timestep)
@@ -54,7 +53,12 @@ class RobotEnv(MujocoEnv):
                              "Current Model-Timestep:{}".format(self.model_timestep))
 
         # memorize the initial position and rotation
-        self.init_pos, self.init_rot_quat = self.kd_solver.fk(self.robot.get_arm_qpos(), rot_format='quaternion')
+        self.init_pos = dict()
+        self.init_quat = dict()
+        for agent in self.robot.agents:
+            self.init_pos[agent], self.init_quat[agent] = self.controller.forward_kinematics(self.robot.get_arm_qpos(agent), agent)
+        self.robot.init_pos = self.init_pos
+        self.robot.init_quat = self.init_quat
 
     def auto_render(func):
         """ Automatically render the scene. """
@@ -78,9 +82,7 @@ class RobotEnv(MujocoEnv):
     def step(self, action: Union[np.ndarray, Dict[str, np.ndarray]]):
         if self.is_interpolate:
             self.controller.step_interpolator(action)
-        # low-level control
-        for i in range(self._n_substeps):
-            super().step(action)
+        super().step(action)
 
     def reset(self, seed=None, options=None):
         self.controller.reset()

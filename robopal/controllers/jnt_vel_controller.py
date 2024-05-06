@@ -1,31 +1,31 @@
-import numpy as np
-
-from robopal.commons.pin_utils import PinSolver
 from collections import deque
 
+import numpy as np
 
-class JntVelController:
+from robopal.controllers.base_controller import BaseController
+
+
+class JointVelocityController(BaseController):
     def __init__(
             self,
             robot,
             is_interpolate=False,
             interpolator_config: dict = None
     ):
+        super().__init__(robot)
+
         if is_interpolate:
-            raise ValueError("JntVelController does not support interpolation")
+            raise ValueError("JointVelocityController does not support interpolation")
 
         self.name = 'JNTVEL'
-        self.dofs = robot.jnt_num
-        self.robot = robot
-        self.kd_solver = PinSolver(robot.urdf_path)
 
         # hyperparameters of impedance controller
         self.k_p = np.zeros(self.dofs)
         self.k_d = np.zeros(self.dofs)
 
         self.set_jnt_params(
-            p=3.0 * np.ones(self.dofs),
-            d=0.003 * np.ones(self.dofs),
+            p=0.3 * np.ones(self.dofs),
+            d=0.1 * np.ones(self.dofs),
         )
 
         self.last_err = np.zeros(robot.jnt_num)
@@ -53,15 +53,13 @@ class JntVelController:
         :param v_cur: current joint velocity
         :return: desired joint torque
         """
-        C = self.kd_solver.get_coriolis_mat(q_cur, v_cur)
-        g = self.kd_solver.get_gravity_mat(q_cur)
-        coriolis_gravity = C[-1] + g
+        compensation = self.robot.get_coriolis_gravity_compensation(agent)
 
         err = v_des - v_cur
         derr = err - self.last_err
         self.last_err = err
         self.err_buffer.append(derr)
-        tau = self.k_p * err - self.k_d * np.asarray(self.err_buffer).flatten().mean() + coriolis_gravity
+        tau = self.k_p * err - self.k_d * np.asarray(self.err_buffer).flatten().mean() + compensation
 
         return tau
 
@@ -75,6 +73,3 @@ class JntVelController:
             v_cur=self.robot.get_arm_qvel(),
         )
         return torque
-
-    def reset(self):
-        pass

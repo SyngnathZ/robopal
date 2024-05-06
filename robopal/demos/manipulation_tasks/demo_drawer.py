@@ -7,11 +7,11 @@ from robopal.robots.diana_med import DianaDrawer
 class DrawerEnv(ManipulateEnv):
 
     def __init__(self,
-                 robot=DianaDrawer(),
+                 robot=DianaDrawer,
                  render_mode='human',
-                 control_freq=10,
+                 control_freq=20,
                  enable_camera_viewer=False,
-                 controller='JNTIMP',
+                 controller='CARTIK',
                  is_interpolate=False,
                  is_pd=False,
                  ):

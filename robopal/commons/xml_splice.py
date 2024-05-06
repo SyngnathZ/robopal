@@ -121,15 +121,15 @@ class XMLSplicer:
         for geom in node.findall('.//geom[@name]'):
             geom.attrib['name'] = '{}_{}'.format(id, geom.attrib['name'])
 
-        for default in node.findall('.//default'):
-            if 'class' in default.attrib:
-                for geom in node.findall('.//geom'):
-                    if 'class' in geom.attrib and geom.get('class') == default.attrib['class']:
-                        geom.set('class', '{}_{}'.format(id, geom.attrib['class']))
-                for body in node.findall('.//body'):
-                    if 'childclass' in body.attrib and body.get('childclass') == default.attrib['class']:
-                        body.set('childclass', '{}_{}'.format(id, body.attrib['childclass']))
-                default.set('class', '{}_{}'.format(id, default.attrib['class']))
+        # for default in node.findall('.//default'):
+        #     if 'class' in default.attrib:
+        #         for geom in node.findall('.//geom'):
+        #             if 'class' in geom.attrib and geom.get('class') == default.attrib['class']:
+        #                 geom.set('class', '{}_{}'.format(id, geom.attrib['class']))
+        #         for body in node.findall('.//body'):
+        #             if 'childclass' in body.attrib and body.get('childclass') == default.attrib['class']:
+        #                 body.set('childclass', '{}_{}'.format(id, body.attrib['childclass']))
+        #         default.set('class', '{}_{}'.format(id, default.attrib['class']))
 
         for joint in node.findall('.//joint[@name]'):
             target = joint.attrib['name']
@@ -302,11 +302,11 @@ class XMLSplicer:
                                             goal_body=(mani_id, f'{mani_id}_mount_base_link') if chassis is not None else (mani_id, 'worldbody'))
 
             if gripper is not None:
-                assert kwargs['g2m_body'] is not None, "Please specify the g2m_body for the gripper."
-                g2m_body = kwargs['g2m_body'] if isinstance(kwargs['g2m_body'], list) else [kwargs['g2m_body']]
+                assert kwargs['attached_body'] is not None, "Please specify the attached_body for the gripper."
+                attached_body = kwargs['attached_body'] if isinstance(kwargs['attached_body'], list) else [kwargs['attached_body']]
                 if isinstance(gripper, str):
                     gripper = [gripper]
                 if isinstance(gripper, list):
-                    for goal_body, g in zip(enumerate(g2m_body), gripper):
+                    for goal_body, g in zip(enumerate(attached_body), gripper):
                         gripper_path = path.join(GRIPPERS_DIR_PATH, g, '{}.xml'.format(g))
                         self.add_component_from_xml(gripper_path, goal_body=goal_body)

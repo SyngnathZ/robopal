@@ -8,13 +8,12 @@ from robopal.robots.diana_med import DianaDrawerCube
 class DrawerCubeEnv(ManipulateEnv):
 
     def __init__(self,
-                 robot=DianaDrawerCube(),
+                 robot=DianaDrawerCube,
                  render_mode='human',
-                 control_freq=10,
+                 control_freq=20,
                  enable_camera_viewer=False,
-                 controller='JNTIMP',
+                 controller='CARTIK',
                  is_interpolate=False,
-                 is_pd=False,
                  ):
         super().__init__(
             robot=robot,
@@ -23,7 +22,6 @@ class DrawerCubeEnv(ManipulateEnv):
             enable_camera_viewer=enable_camera_viewer,
             controller=controller,
             is_interpolate=is_interpolate,
-            is_pd=is_pd,
         )
         self.name = 'DrawerBox-v1'
 
