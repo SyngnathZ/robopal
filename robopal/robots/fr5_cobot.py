@@ -19,19 +19,26 @@ class FR5Cobot(BaseRobot):
             chassis=mount,
             manipulator=manipulator,
             gripper=gripper,
-            g2m_body='0_tool_Link',
-            urdf_path=os.path.join(ASSET_DIR, "models/manipulators/FR5Cobot/FR5Cobot.urdf"),
+            attached_body='0_tool_Link',
         )
         self.arm_joint_names = {self.agents[0]: ['0_j1', '0_j2', '0_j3', '0_j4', '0_j5', '0_j6']}
         self.arm_actuator_names = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6']}
+        self.base_link_name = {self.agents[0]: '0_base_link'}
+        self.end_name = {self.agents[0]: '0_tool_Link'}
+
+    def add_assets(self):
+        goal_site_0 = """<site name="0_goal_site" pos="0.33 -0.3 0.5" size="0.01 0.01 0.01" rgba="1 0 0 1" type="sphere" />"""
+        self.mjcf_generator.add_node_from_str('worldbody', goal_site_0)
+
     @property
     def init_qpos(self):
         """ Robot's init joint position. """
-        return {self.agents[0]: np.array([0.0, -np.pi / 4.0, 0.0, np.pi / 2.0, 0.00, np.pi / 4.0])}
+        return {self.agents[0]: np.array([0.0, -np.pi / 2.0, 0.0, 0.0, 0.00, 0.0])}
 
 
 class DualFR5Cobot(BaseRobot):
     """ Dual FR5 robots base class. """
+
     def __init__(self,
                  scene='dualGrasping',
                  manipulator=['FR5Cobot', 'FR5Cobot'],
@@ -49,9 +56,9 @@ class DualFR5Cobot(BaseRobot):
             urdf_path=os.path.join(ASSET_DIR, "models/manipulators/FR5Cobot/FR5Cobot.urdf"),
         )
         self.arm_joint_names = {self.agents[0]: ['0_j1', '0_j2', '0_j3', '0_j4', '0_j5', '0_j6'],
-                            self.agents[1]: ['1_j1', '1_j2', '1_j3', '1_j4', '1_j5', '1_j6']}
+                                self.agents[1]: ['1_j1', '1_j2', '1_j3', '1_j4', '1_j5', '1_j6']}
         self.arm_actuator_names = {self.agents[0]: ['0_a1', '0_a2', '0_a3', '0_a4', '0_a5', '0_a6'],
-                               self.agents[1]: ['1_a1', '1_a2', '1_a3', '1_a4', '1_a5', '1_a6']}
+                                   self.agents[1]: ['1_a1', '1_a2', '1_a3', '1_a4', '1_a5', '1_a6']}
 
     @property
     def init_qpos(self):
@@ -112,7 +119,6 @@ class FR5Grasp(FR5Cobot):
     def init_qpos(self):
         """ Robot's init joint position. """
         return {self.agents[0]: np.array([0.02167871, -0.16747492, 0.00730963, 2.5573341, -0.00401727, -0.42203728])}
-
 
 # class DianaGraspMultiObjs(DianaGrasp):
 #     def add_assets(self):
