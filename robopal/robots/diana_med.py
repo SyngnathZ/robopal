@@ -38,8 +38,8 @@ class DualDianaMed(BaseRobot):
                  scene='dualGrasping',
                  manipulator=['DianaMed', 'DianaMed'],
                  gripper=['rethink_gripper', 'rethink_gripper'],
-                 attached_body=['0_attachment', '1_attachment']
                  mount=['floor_left', 'floor_right'],
+                 attached_body=['0_attachment', '1_attachment']
                  ):
         super().__init__(
             name="diana_med",
