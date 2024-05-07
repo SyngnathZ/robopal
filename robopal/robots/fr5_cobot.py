@@ -109,16 +109,17 @@ class FR5Grasp(FR5Cobot):
                          gripper='rethink_gripper',
                          mount='top_point')
 
+        self.end_name = {self.agents[0]: '0_eef'}
     def add_assets(self):
         self.mjcf_generator.add_node_from_xml(ASSET_DIR + '/objects/cube/green_cube.xml')
 
-        goal_site = """<site name="goal_site" pos="0.4 0.0 0.5" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere" />"""
+        goal_site = """<site name="goal_site" pos="0.43 -0.3 1.12" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere" />"""
         self.mjcf_generator.add_node_from_str('worldbody', goal_site)
 
     @property
     def init_qpos(self):
         """ Robot's init joint position. """
-        return {self.agents[0]: np.array([0.02167871, -0.16747492, 0.00730963, 2.5573341, -0.00401727, -0.42203728])}
+        return {self.agents[0]: np.array([0.0, -np.pi / 2.0, 0.0, 0.0, 0.00, 0.0])}
 
 # class DianaGraspMultiObjs(DianaGrasp):
 #     def add_assets(self):
