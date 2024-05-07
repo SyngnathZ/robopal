@@ -33,7 +33,7 @@ class FR5Cobot(BaseRobot):
     @property
     def init_qpos(self):
         """ Robot's init joint position. """
-        return {self.agents[0]: np.array([0.0, -np.pi / 2.0, 0.0, 0.0, 0.00, 0.0])}
+        return {self.agents[0]: np.array([0.0, 0.0, 0.0, 0.0, 0.00, 0.0])}
 
 
 class DualFR5Cobot(BaseRobot):
@@ -119,7 +119,7 @@ class FR5Grasp(FR5Cobot):
     @property
     def init_qpos(self):
         """ Robot's init joint position. """
-        return {self.agents[0]: np.array([0.0, -np.pi / 2.0, 0.0, 0.0, 0.00, 0.0])}
+        return {self.agents[0]: np.array([0.0, 0.0, 0.0, 0.0, 0.00, 0.0])}
 
 # class DianaGraspMultiObjs(DianaGrasp):
 #     def add_assets(self):
