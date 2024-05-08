@@ -37,18 +37,31 @@ if __name__ == "__main__":
         action = np.array([0.33, -0.39, 0.66, 1.0, 0.0, 0.0, 0])
 
     elif options['ctrl'] == 'CARTIK':
-        action = np.array([0.43, -0.3, 0.7, 1, 0, 0, 0])
+        action = np.array([0.6, 0.2, 0.37, 1, 0, 0, 0])
 
     def test_JNTIMP_error():
         print(np.linalg.norm(action - env.robot.get_arm_qpos()))
     
     def test_CARTIK_error():
         current_pos, current_quat = env.controller.forward_kinematics(env.robot.get_arm_qpos())
-        print(np.sum(np.abs(action[:3] - current_pos)) + np.sum(np.abs(action[3:] - current_quat)))
+        print("Current Error:" + str(np.sum(np.abs(action[:3] - current_pos)) + np.sum(np.abs(action[3:] - current_quat))))
+
+    def get_desired_pos():
+        mocap_pos = env.mj_data.body("green_block").xpos.copy()
+        mocap_pos[2] = mocap_pos[2] - 0.42
+        additional_array = np.array([0, 1, 0, 0])
+        # print("Current Pos:" + str(mocap_pos))
+
+        return np.concatenate((mocap_pos, additional_array))
+
+    def get_current_qpos():
+        pos= env.robot.get_arm_qpos().copy()
+        print(pos)
 
     if isinstance(env, RobotEnv):
         env.reset()
-        for t in range(int(2e4)):
-            env.step(action)
-            test_CARTIK_error()
+        while True:
+            env.step(get_desired_pos())
+            get_current_qpos()
+            # test_CARTIK_error()
         env.close()

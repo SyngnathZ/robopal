@@ -31,8 +31,8 @@ class ReachPlaceEnv(EndReachEnv):
 
         self.max_episode_steps = 50
 
-        self.pos_max_bound = np.array([0.6, 0.2, 0.37])
-        self.pos_min_bound = np.array([0.3, -0.2, 0.12])
+        self.pos_max_bound = np.array([0.86, 0, 0.4])
+        self.pos_min_bound = np.array([0.26, -0.23, 0.2])
         self.grip_max_bound = 0.02
         self.grip_min_bound = -0.01
 
