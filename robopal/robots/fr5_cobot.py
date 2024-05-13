@@ -16,7 +16,7 @@ class FR5Cobot(BaseRobot):
         super().__init__(
             name="fr5_cobot",
             scene=scene,
-            chassis=mount,
+            mount=mount,
             manipulator=manipulator,
             gripper=gripper,
             attached_body='0_tool_Link',
@@ -112,9 +112,6 @@ class FR5Grasp(FR5Cobot):
         self.end_name = {self.agents[0]: '0_eef'}
     def add_assets(self):
         self.mjcf_generator.add_node_from_xml(ASSET_DIR + '/objects/cube/green_cube.xml')
-
-        goal_site = """<site name="goal_site" pos="0.43 -0.3 1.12" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere" />"""
-        self.mjcf_generator.add_node_from_str('worldbody', goal_site)
 
     @property
     def init_qpos(self):

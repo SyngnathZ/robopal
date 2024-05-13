@@ -2,14 +2,15 @@ import argparse
 import numpy as np
 import logging
 
+from robopal.robots.ur5e import UR5eGrasp
 from robopal.robots.diana_med import DianaGrasp
 from robopal.robots.fr5_cobot import FR5Grasp
-from robopal.robots.panda import Panda
+from robopal.robots.panda import Panda, PandaGrasp
 from robopal.envs import RobotEnv
 
 logging.basicConfig(level=logging.INFO)
 
-    
+
 if __name__ == "__main__":
 
     options = {}
@@ -20,7 +21,7 @@ if __name__ == "__main__":
     assert options['ctrl'] in ['JNTIMP', 'JNTVEL', 'CARTIMP', 'CARTIK'], 'Invalid controller'
 
     env = RobotEnv(
-        robot=FR5Grasp,
+        robot=UR5eGrasp,
         render_mode='human',
         control_freq=200,
         is_interpolate=False,
@@ -44,7 +45,9 @@ if __name__ == "__main__":
     
     def test_CARTIK_error():
         current_pos, current_quat = env.controller.forward_kinematics(env.robot.get_arm_qpos())
-        print("Current Error:" + str(np.sum(np.abs(action[:3] - current_pos)) + np.sum(np.abs(action[3:] - current_quat))))
+        target_pos, target_quat = env.mj_data.body("green_block").xpos.copy(), env.mj_data.body(
+            "green_block").xquat.copy()
+        # print("Current Error:" + str(np.sum(np.abs(target_pos - current_pos))))
 
     def get_desired_pos():
         mocap_pos = env.mj_data.body("green_block").xpos.copy()
@@ -63,5 +66,5 @@ if __name__ == "__main__":
         while True:
             env.step(get_desired_pos())
             get_current_qpos()
-            # test_CARTIK_error()
+            test_CARTIK_error()
         env.close()
