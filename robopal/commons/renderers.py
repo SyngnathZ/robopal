@@ -59,14 +59,6 @@ class MjRenderer:
             image = self.image_queue.get()
             cv.save_image(image)
             logging.info(f"Save a picture to {cv.CV_CACHE_DIR}.")
-        if keycode == 265:  # Up arrow
-            self.mj_data.mocap_pos[0, 2] += 0.01
-        elif keycode == 264:  # Down arrow
-            self.mj_data.mocap_pos[0, 2] -= 0.01
-        elif keycode == 263:  # Left arrow
-            self.mj_data.mocap_pos[0, 0] -= 0.01
-        elif keycode == 262:  # Right arrow
-            self.mj_data.mocap_pos[0, 0] += 0.01
 
     def _init_renderer(self):
         """ Initialize renderer, choose official renderer with "viewer"(joined from version 2.3.3),
@@ -153,6 +145,13 @@ class MjRenderer:
                 rgba=np.concatenate([np.random.uniform(0, 1, 3), np.array([1])], axis=0)
             )
 
+    def visualize_site_frame(self):
+        """ Visualize frames and labels. """
+        assert self.render_mode in ["human", "rgb_array", "depth"]
+        self.viewer.opt.frame = mujoco.mjtFrame.mjFRAME_SITE
+        self.viewer.opt.label = mujoco.mjtLabel.mjLABEL_SITE
+        self.viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_TRANSPARENT] = True
+    
     def render_pixels_from_camera(self, cam='0_cam', enable_depth=True):
         self.image_renderer.update_scene(self.mj_data, camera=cam)
         if enable_depth is True:
