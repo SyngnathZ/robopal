@@ -23,7 +23,7 @@
             <body name="j1_Link">
                 <inertial pos="5.0029e-07 -0.0040922 0.14629" quat="0.999588 0.0287044 7.54149e-06 -1.58789e-05"
                           mass="4.3771" diaginertia="0.010731 0.0104154 0.00817191"/>
-                <joint name="j1" pos="0 0 0" axis="0 0 1" range="-3.0543 3.0543" damping="0.05"/>
+                <joint name="j1" pos="0 0 0" axis="0 0 1" range="-6.1086 6.1086" damping="0.05"/>
                 <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.89804 0.91765 0.92941 1"
                       mesh="j1_Link"/>
                 <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="j1_Link"/>
