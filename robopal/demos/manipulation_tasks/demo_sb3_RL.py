@@ -6,8 +6,8 @@ import os
 import argparse
 
 # Create directories to hold models and logs
-model_dir = "models/ReachPlaceSingle-v1"
-log_dir = "logs/ReachPlaceSingle-v1"
+model_dir = "models/ReachPlaceSingle-Sparse-v3.1"
+log_dir = "logs/ReachPlaceSingle-Sparse-v3.1"
 os.makedirs(model_dir, exist_ok=True)
 os.makedirs(log_dir, exist_ok=True)
 
@@ -15,15 +15,15 @@ os.makedirs(log_dir, exist_ok=True)
 def train(env, sb3_algo):
     match sb3_algo:
         case 'SAC':
-            model = SAC('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+            model = SAC('MultiInputPolicy', env, verbose=1, device='cuda', tensorboard_log=log_dir)
         case 'TD3':
-            model = TD3('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+            model = TD3('MultiInputPolicy', env, verbose=1, device='cuda', tensorboard_log=log_dir)
         case 'A2C':
-            model = A2C('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+            model = A2C('MultiInputPolicy', env, verbose=1, device='cuda', tensorboard_log=log_dir)
         case 'PPO':
-            model = PPO('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+            model = PPO('MultiInputPolicy', env, verbose=1, device='cuda', tensorboard_log=log_dir)
         case 'TQC':
-            model = TQC('MultiInputPolicy', env, verbose=1, device='cpu', tensorboard_log=log_dir)
+            model = TQC('MultiInputPolicy', env, verbose=1, device='cuda', tensorboard_log=log_dir)
         case _:
             print('Algorithm not found')
             return
