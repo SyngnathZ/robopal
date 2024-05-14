@@ -7,6 +7,7 @@ ASSET_DIR = os.path.join(os.path.dirname(__file__), '../assets')
 
 class FR5Cobot(BaseRobot):
     """ FR5 robot base class. """
+
     def __init__(self,
                  scene='default',
                  manipulator='FR5Cobot',
@@ -70,8 +71,8 @@ class DualFR5Cobot(BaseRobot):
     @property
     def init_qpos(self):
         """ Robot's init joint position. """
-        return {self.agents[0]: np.array([2.56082419, -0.26609859, 1.85596393, -1.58987423, -1.57080864, -0.58030651]),
-                self.agents[1]: np.array([2.56082419, -0.26609859, 1.85596393, -1.58987423, -1.57080864, -0.58030651])}
+        return {self.agents[0]: np.array([3.42157203, 0.18160906, 1.7407097, -1.922319, -1.57079633, -1.29082503]),
+                self.agents[1]: np.array([3.42157203, 0.18160906, 1.7407097, -1.922319, -1.57079633, -1.29082503])}
 
 
 class FR5Aruco(FR5Cobot):
@@ -96,6 +97,7 @@ class FR5Grasp(FR5Cobot):
                          mount='top_point')
 
         self.end_name = {self.agents[0]: '0_eef'}
+
     def add_assets(self):
         self.mjcf_generator.add_node_from_xml(ASSET_DIR + '/objects/cube/green_cube.xml')
 
