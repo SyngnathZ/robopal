@@ -43,8 +43,8 @@ class DualEndReachEnv(RobotEnv):
         self.goal_pos = None
 
         self.pos_ratio = 0.1
-        self.pos_max_bound = np.array([0.65, 0.2, 0.4])
-        self.pos_min_bound = np.array([0.3, -0.2, 0.14])
+        self.pos_max_bound = np.array([0.65, 0.2, 0.82])
+        self.pos_min_bound = np.array([0.3, -0.2, 0.5])
         self.grip_max_bound = 0.02
         self.grip_min_bound = -0.02
 
@@ -52,7 +52,8 @@ class DualEndReachEnv(RobotEnv):
         """
         Map to target action space bounds
         """
-        actual_pos_action = {agent: self.controller.forward_kinematics(self.robot.get_arm_qpos())[0] for agent in self.robot.agents}
+        actual_pos_action = {agent: self.controller.forward_kinematics(self.robot.get_arm_qpos(agent), agent=agent)[0]
+                             for agent in self.robot.agents}
         """ Only designed for dual-arm robots (Experimental)."""
         actual_pos_action['arm0'] += self.pos_ratio * action[:3]
         actual_pos_action['arm0'] = actual_pos_action['arm0'].clip(self.pos_min_bound, self.pos_max_bound)[:3]
