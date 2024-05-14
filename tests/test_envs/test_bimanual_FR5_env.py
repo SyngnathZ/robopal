@@ -3,45 +3,39 @@ import numpy as np
 import logging
 
 from robopal.robots.fr5_cobot import DualFR5Cobot
-from robopal.envs import RobotEnv, PosCtrlEnv
+from robopal.envs import RobotEnv
 
 logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--ctrl', default='JNTIMP', type=str,
+parser.add_argument('--ctrl', default='CARTIK', type=str,
                     help='JSC for task space controller or OSC for joint space controller')
 args = parser.parse_args()
 
-if args.ctrl not in ['JNTIMP', 'CARTIK']:
-    raise ValueError('Invalid controller')
+assert args.ctrl in ['JNTIMP', 'CARTIK'], 'Invalid controller'
 
 if args.ctrl == 'JNTIMP':
-    env = RobotEnv(
-        robot=DualFR5Cobot(),
-        render_mode='human',
-        control_freq=200,
-        is_interpolate=False,
-        controller=args.ctrl,
-    )
+    actions = [np.array([0.3, -0.4, 0.7, 0.3, -0.4, 0.7]),
+               np.array([0.3, -0.4, 0.7, 0.3, -0.4, 0.7])]
 
-    actions = [np.array([0.3, -2.4, -0.7, 0.3, -0.4, 0.7]),
-               np.array([0.3, -2.4, -0.7, 0.3, -0.4, 0.7])]
+elif args.ctrl == 'CARTIK':
+    actions = [np.array([0.3, 0.0, 0.5, 0, 1, 0, 0]),
+               np.array([0.5, 0.0, 0.5, 0, 1, 0, 0])]
+else:
+    raise ValueError('Invaild controller.')
 
-else:  # args.ctrl == 'CARTIK'
-    env = PosCtrlEnv(
-        robot=DualFR5Cobot(),
-        render_mode='human',
-        control_freq=200,
-        is_interpolate=False,
-        is_pd=False
-    )
-    actions = [np.array([0.3, 0.3, 0.4, 1, 0, 0, 0]),
-               np.array([0.4, -0.4, 0.6, 1, 0, 0, 0])]
+env = RobotEnv(
+    robot=DualFR5Cobot,
+    render_mode='human',
+    control_freq=200,
+    is_interpolate=False,
+    controller=args.ctrl,
+)
+env.controller.reference = 'world'
 
 actions = {agent: actions[id] for id, agent in enumerate(env.agents)}
 
-if isinstance(env, RobotEnv):
-    env.reset()
-    for t in range(int(1e4)):
-        env.step(actions)
-    env.close()
+env.reset()
+for t in range(int(1e4)):
+    env.step(actions)
+env.close()

@@ -21,12 +21,13 @@ if __name__ == "__main__":
     assert options['ctrl'] in ['JNTIMP', 'JNTVEL', 'CARTIMP', 'CARTIK'], 'Invalid controller'
 
     env = RobotEnv(
-        robot=UR5eGrasp,
+        robot=FR5Grasp,
         render_mode='human',
         control_freq=200,
         is_interpolate=False,
         controller=options['ctrl'],
     )
+    env.controller.reference = 'world'
 
     if options['ctrl'] == 'JNTIMP':
         action = np.array([0.3, -0.4, 0.7, 0.3, -0.4, 0.7, 0])
@@ -51,7 +52,6 @@ if __name__ == "__main__":
 
     def get_desired_pos():
         mocap_pos = env.mj_data.body("green_block").xpos.copy()
-        mocap_pos[2] = mocap_pos[2] - 0.42
         additional_array = np.array([0, 1, 0, 0])
         # print("Current Pos:" + str(mocap_pos))
 
