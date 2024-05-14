@@ -2,7 +2,7 @@ import mujoco
 import numpy as np
 import logging
 
-from robopal.envs import PosCtrlEnv
+from robopal.envs import RobotEnv
 import robopal.commons.transform as T
 
 logging.basicConfig(level=logging.INFO)
@@ -13,7 +13,7 @@ def goal_distance(goal_a, goal_b):
     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 
-class DualEndReachEnv(PosCtrlEnv):
+class DualEndReachEnv(RobotEnv):
     """
     This environment is using for reaching a randomly appeared target position with the end effector.
     The control frequency of the robot is of f = 20 Hz. This is achieved by applying the same action
@@ -27,7 +27,6 @@ class DualEndReachEnv(PosCtrlEnv):
                  enable_camera_viewer=False,
                  controller='JNTIMP',
                  is_interpolate=False,
-                 is_pd=False,
                  ):
         super().__init__(
             robot=robot,
@@ -36,7 +35,6 @@ class DualEndReachEnv(PosCtrlEnv):
             enable_camera_viewer=enable_camera_viewer,
             controller=controller,
             is_interpolate=is_interpolate,
-            is_pd=is_pd,
         )
 
         self.max_episode_steps = 50
@@ -54,7 +52,7 @@ class DualEndReachEnv(PosCtrlEnv):
         """
         Map to target action space bounds
         """
-        actual_pos_action = {agent: self.kd_solver.fk(self.robot.get_arm_qpos(agent))[0] for agent in self.robot.agents}
+        actual_pos_action = {agent: self.controller.forward_kinematics(self.robot.get_arm_qpos())[0] for agent in self.robot.agents}
         """ Only designed for dual-arm robots (Experimental)."""
         actual_pos_action['arm0'] += self.pos_ratio * action[:3]
         actual_pos_action['arm0'] = actual_pos_action['arm0'].clip(self.pos_min_bound, self.pos_max_bound)[:3]
@@ -148,9 +146,9 @@ class DualEndReachEnv(PosCtrlEnv):
     def set_random_init_position(self):
         """ Set the initial position of the end effector to a random position within the workspace.
         """
-        random_pos = np.random.uniform(self.pos_min_bound, self.pos_max_bound)
-        init_rot = T.quat_2_mat(self.init_rot_quat)
-        qpos = self.kd_solver.ik(random_pos, init_rot, q_init=self.robot.get_arm_qpos())
-        self.set_joint_qpos(qpos)
-        mujoco.mj_forward(self.mj_model, self.mj_data)
-        self.render()
+        for agent in self.robot.agents:
+            random_pos = np.random.uniform(self.pos_min_bound, self.pos_max_bound)
+            qpos = self.controller.ik(random_pos, self.init_quat[agent], q_init=self.robot.get_arm_qpos(agent))
+            self.set_joint_qpos(qpos, agent)
+            mujoco.mj_forward(self.mj_model, self.mj_data)
+            self.render()
