@@ -1,7 +1,7 @@
 import mujoco
 import numpy as np
 import logging
-
+from typing import Dict, Union, Tuple, Any
 from robopal.envs import RobotEnv
 import robopal.commons.transform as T
 
@@ -44,10 +44,10 @@ class ManipulateEnv(RobotEnv):
         self.pos_ratio = 0.1
         self.pos_max_bound = np.array([0.65, 0.2, 0.4])
         self.pos_min_bound = np.array([0.3, -0.2, 0.14])
-        self.grip_max_bound = 0.02
-        self.grip_min_bound = -0.02
+        self.grip_max_bound = self.robot.end[self.agents[0]]._ctrl_range[1]
+        self.grip_min_bound = self.robot.end[self.agents[0]]._ctrl_range[0]
 
-    def action_scale(self, action):
+    def action_normalize(self, action) -> Tuple[np.ndarray, Any]:
         """
         Map to target action space bounds
         """
@@ -55,9 +55,10 @@ class ManipulateEnv(RobotEnv):
         actual_pos_action = current_pos + self.pos_ratio * action[:3]
         actual_pos_action = actual_pos_action.clip(self.pos_min_bound, self.pos_max_bound)
         gripper_ctrl = (action[3] + 1) * (self.grip_max_bound - self.grip_min_bound) / 2 + self.grip_min_bound
+        
         return actual_pos_action, gripper_ctrl
 
-    def step(self, action) -> tuple:
+    def step(self, action) -> Tuple:
         """ Take one step in the environment.
 
         :param action:  The action space is 4-dimensional, with the first 3 dimensions corresponding to the desired
@@ -67,12 +68,10 @@ class ManipulateEnv(RobotEnv):
         """
         self._timestep += 1
 
-        actual_pos_action, gripper_ctrl = self.action_scale(action)
+        actual_pos_action, gripper_ctrl = self.action_normalize(action)
 
         # take one step
-        self.mj_data.actuator('0_gripper_l_finger_joint').ctrl[0] = gripper_ctrl
-        self.mj_data.actuator('0_gripper_r_finger_joint').ctrl[0] = gripper_ctrl
-
+        self.robot.end[self.agents[0]].apply_action(gripper_ctrl)
         super().step(actual_pos_action[:3])
 
         obs = self._get_obs()
@@ -105,15 +104,15 @@ class ManipulateEnv(RobotEnv):
         d = goal_distance(achieved_goal, desired_goal)
         return (d < th).astype(np.float32)
 
-    def _get_obs(self) -> dict:
+    def _get_obs(self, agent: str = None) -> Union[Dict, np.ndarray]:
         """ The observation space is 16-dimensional, with the first 3 dimensions corresponding to the position
         of the block, the next 3 dimensions corresponding to the position of the goal, the next 3 dimensions
         corresponding to the position of the gripper, the next 3 dimensions corresponding to the vector
         between the block and the gripper, and the last dimension corresponding to the current gripper opening.
         """
-        return {}
+        raise NotImplementedError
 
-    def _get_info(self) -> dict:
+    def _get_info(self, agent: str = None) -> dict:
         return {}
 
     def reset(self, seed=None, options=None):
@@ -132,7 +131,7 @@ class ManipulateEnv(RobotEnv):
     def set_random_init_position(self):
         """ Set the initial position of the end effector to a random position within the workspace.
         """
-        for agent in self.robot.agents:
+        for agent in self.agents:
             random_pos = np.random.uniform(self.pos_min_bound, self.pos_max_bound)
             qpos = self.controller.ik(random_pos, self.init_quat[agent], q_init=self.robot.get_arm_qpos(agent))
             self.set_joint_qpos(qpos, agent)

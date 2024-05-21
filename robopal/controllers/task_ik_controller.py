@@ -102,8 +102,8 @@ class CartesianIKController(JointImpedanceController):
 
         # Regularization residual.
         reg_target = self.robot.init_qpos[agent] if reg_target is None else reg_target
-        res_reg = reg * (x - reg_target)
-
+        res_reg = reg * (x.squeeze() - reg_target)
+        
         return np.hstack((res_pos, res_quat, res_reg))
 
     def _ik_jac(self, x, res, pos=None, quat=None, radius=.04, reg=1e-3, agent='arm0'):
@@ -146,6 +146,11 @@ class CartesianIKController(JointImpedanceController):
         target_mat = T.quat_2_mat(quat)
         mat = radius * Deffector.T @ target_mat.T
         jac_quat = mat @ jac_quat
+
+        if self.reference == 'base':
+            base2world_mat = self.robot.get_base_xmat(agent)
+            jac_pos = base2world_mat.T @ jac_pos
+            jac_quat = base2world_mat.T @ jac_quat
 
         # Regularization Jacobian.
         jac_reg = reg * np.eye(len(self.robot.arm_joint_indexes[agent]))

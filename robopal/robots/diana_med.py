@@ -35,7 +35,7 @@ class DianaMed(BaseRobot):
 class DualDianaMed(BaseRobot):
     """ Dual DianaMed robots base class. """
     def __init__(self,
-                 scene='dualGrasping',
+                 scene='default',
                  manipulator=['DianaMed', 'DianaMed'],
                  gripper=['rethink_gripper', 'rethink_gripper'],
                  mount=['floor_left', 'floor_right'],
@@ -55,13 +55,6 @@ class DualDianaMed(BaseRobot):
                                self.agents[1]: ['1_a1', '1_a2', '1_a3', '1_a4', '1_a5', '1_a6', '1_a7']}
         self.base_link_name = {self.agents[0]: '0_base_link', self.agents[1]: '1_base_link'}
         self.end_name = {self.agents[0]: '0_link7', self.agents[1]: '1_link7'}
-
-    def add_assets(self):
-
-        goal_site_0 = """<site name="0_goal_site" pos="0.4 0.0 0.5" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere" />"""
-        goal_site_1 = """<site name="1_goal_site" pos="0.3 0.0 0.5" size="0.02 0.02 0.02" rgba="0 1 0 1" type="sphere" />"""
-        self.mjcf_generator.add_node_from_str('worldbody', goal_site_0)
-        self.mjcf_generator.add_node_from_str('worldbody', goal_site_1)
 
     @property
     def init_qpos(self):
@@ -108,9 +101,10 @@ class DianaCalib(DianaMed):
 
 class DianaGrasp(DianaMed):
     def __init__(self):
-        super().__init__(scene='dualGrasping',
+        super().__init__(scene='grasping',
                          gripper='rethink_gripper',
                          mount='top_point')
+        self.end_name = {self.agents[0]: '0_eef'}
 
     def add_assets(self):
         self.mjcf_generator.add_node_from_xml(ASSET_DIR + '/objects/cube/green_cube.xml')
