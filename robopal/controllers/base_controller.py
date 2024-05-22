@@ -7,7 +7,7 @@ from robopal.robots.base import BaseRobot
 
 
 class BaseController(object):
-    reference = 'base'
+    reference = 'world'
 
     def __init__(self, robot: BaseRobot) -> None:
         self.name = None
